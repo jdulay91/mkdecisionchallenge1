@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Grid, TextField, Button } from '@material-ui/core';
+import { Grid, TextField, Button, Dialog, DialogContent, Typography, DialogTitle } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import SendIcon from '@material-ui/icons/Send';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import CheckIcon from '@material-ui/icons/Check';
+import CancelIcon from '@material-ui/icons/Cancel';
 import axios from 'axios';
 
 const initialValues = {
@@ -26,6 +28,8 @@ const useStyles = makeStyles(theme => ({
 function Form() {
 	const [formValues, setFormValues] = useState(initialValues);
 	const [formErrors, setFormErrors] = useState(errors);
+    const [open, setOpen] = useState(false);
+    const [confirmed, setConfirmed] = useState(false)
 	const classes = useStyles();
 
 	const handleChange = e => {
@@ -65,9 +69,12 @@ function Form() {
 	};
 
 	const handleSubmit = e => {
-		e.preventDefault();
-		axios.get('#');
+		e.preventDefault();        
+        setFormValues(initialValues)
+        setConfirmed(true)
+        setOpen(false)
 	};
+
 	const handleClear = e => {
 		e.preventDefault();
 		setFormValues(initialValues);
@@ -133,7 +140,8 @@ function Form() {
 										formErrors.messageError.length !== 0
 									}
 									variant='contained'
-									color='primary'>
+									color='primary'
+									onClick={() => setOpen(true)}>
 									<SendIcon></SendIcon>
 									Send Message
 								</Button>
@@ -148,6 +156,77 @@ function Form() {
 									Clear Form
 								</Button>
 							</Grid>
+							<Dialog open={open} onClose={() => setOpen(false)}>
+								<DialogContent>
+									<Grid alignItems='center' justify='center' container style={{ height: '30em' }} direction='column' spacing={3}>
+										<Grid item>
+											<Typography variant='h4' gutterBottom>
+												Confirm Message
+											</Typography>
+										</Grid>
+										<Grid item>
+											<TextField
+												error={!!formErrors.nameError}
+												helperText={formErrors.nameError}
+												variant='outlined'
+												value={formValues.name}
+												required
+												id='name'
+												name='name'
+												label='Name'
+												onChange={handleChange}
+											/>
+										</Grid>
+										<Grid item>
+											<TextField
+												error={!!formErrors.emailError}
+												helperText={formErrors.emailError}
+												variant='outlined'
+												value={formValues.email}
+												required
+												type='email'
+												id='email'
+												name='email'
+												label='Email'
+												onChange={handleChange}
+											/>
+										</Grid>
+										<Grid item>
+											<TextField
+												variant='outlined'
+												id='message'
+												multiline
+												error={!!formErrors.messageError}
+												helperText={formErrors.messageError}
+												value={formValues.message}
+												rowsMax={10}
+												aria-label='empty textarea'
+												placeholder='Message'
+												name='message'
+												onChange={handleChange}
+											/>
+										</Grid>
+									</Grid>
+									<Grid item container justify='space-around' alignItems='center'>
+										<Button type='submit' onClick={handleSubmit} variant='contained' color='primary'>
+											<CheckIcon />
+											Confirm
+										</Button>
+										<Button variant='contained' color='primary' onClick={() => setOpen(false)}>
+											<CancelIcon />
+											Cancel
+										</Button>
+									</Grid>
+								</DialogContent>
+                            </Dialog>
+                            <Dialog
+                            open={confirmed}
+                            onClose={()=>{setConfirmed(false)}}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="email sent confirmation"
+                          >
+                            <DialogTitle id="alert-dialog-title">{"Message Sent"}</DialogTitle>
+                            </Dialog>
 						</Grid>
 					</Grid>
 				</form>
