@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "storage": {
+      "mkdecisiontable": [
+        "create",
+        "read"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

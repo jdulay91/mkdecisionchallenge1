@@ -5,7 +5,8 @@ import SendIcon from '@material-ui/icons/Send';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import CheckIcon from '@material-ui/icons/Check';
 import CancelIcon from '@material-ui/icons/Cancel';
-import axios from 'axios';
+import { API } from 'aws-amplify'
+
 
 const initialValues = {
 	name: '',
@@ -25,11 +26,13 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
+
+
 function Form() {
 	const [formValues, setFormValues] = useState(initialValues);
 	const [formErrors, setFormErrors] = useState(errors);
-    const [open, setOpen] = useState(false);
-    const [confirmed, setConfirmed] = useState(false)
+	const [open, setOpen] = useState(false);
+	const [confirmed, setConfirmed] = useState(false);
 	const classes = useStyles();
 
 	const handleChange = e => {
@@ -69,20 +72,29 @@ function Form() {
 	};
 
 	const handleSubmit = e => {
-		e.preventDefault();        
-        setFormValues(initialValues)
-        setConfirmed(true)
-        setOpen(false)
+		e.preventDefault();
+		const data = {
+			body : {
+				name:formValues.name,
+				email:formValues.email,
+				message:formValues.message
+			}
+		}
+		API.post('mkdecisionapi','/contact',data)	
+		
+		setFormValues(initialValues);
+		setConfirmed(true);
+		setOpen(false);
 	};
 
 	const handleClear = e => {
 		e.preventDefault();
 		setFormValues(initialValues);
 	};
-
 	return (
 		<Grid className={classes.container} container justify='center' alignItems='center'>
-			<Grid item container justify='center' alignItems='center'>
+			<Grid item container justify='center' alignItems='center' direction='column'>
+			<Typography gutterBottom variant='h4'> MK DECISION CONTACT FORM</Typography>
 				<form onSubmit={handleSubmit} noValidate autoComplete='off'>
 					<Grid spacing={4} container direction='column' justify='center' alignItems='center'>
 						<Grid item>
@@ -218,15 +230,16 @@ function Form() {
 										</Button>
 									</Grid>
 								</DialogContent>
-                            </Dialog>
-                            <Dialog
-                            open={confirmed}
-                            onClose={()=>{setConfirmed(false)}}
-                            aria-labelledby="alert-dialog-title"
-                            aria-describedby="email sent confirmation"
-                          >
-                            <DialogTitle id="alert-dialog-title">{"Message Sent"}</DialogTitle>
-                            </Dialog>
+							</Dialog>
+							<Dialog
+								open={confirmed}
+								onClose={() => {
+									setConfirmed(false);
+								}}
+								aria-labelledby='alert-dialog-title'
+								aria-describedby='email sent confirmation'>
+								<DialogTitle id='alert-dialog-title'>{'Message Sent'}</DialogTitle>
+							</Dialog>
 						</Grid>
 					</Grid>
 				</form>

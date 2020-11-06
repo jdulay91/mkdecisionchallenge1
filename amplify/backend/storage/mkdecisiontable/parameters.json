@@ -1,0 +1,5 @@
+{
+    "tableName": "mkdecisiontable",
+    "partitionKeyName": "id",
+    "partitionKeyType": "S"
+}
