@@ -80,8 +80,7 @@ function Form() {
 				message:formValues.message
 			}
 		}
-		API.post('mkdecisionapi','/contact',data)	
-		
+		API.post('mkdecisionapi','/contact',data)		
 		setFormValues(initialValues);
 		setConfirmed(true);
 		setOpen(false);
